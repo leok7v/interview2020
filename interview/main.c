@@ -642,19 +642,21 @@ static int compare_int_less(const void* left, const void* right) {
 static int count_tripples(int* a, int n, int s) {
     iterations = 0;
     int count = 0;
-    int last = n - 1;
+    int max_k = n - 1;
+    int min_k = 0;
     for (int i = 0; i < n - 1; i++) {
         iterations++;
-        int k = last;
+        int k = max_k;
         while (i < k - 1 && triplet_min_sum(a, i, k) > s) { k--; }
-        last = minimum(k + 1, n - 1);
-        while (i < k - 1 && triplet_max_sum(a, i, k) >= s && triplet_min_sum(a, i, k) <= s) {
+        max_k = minimum(k + 1, n - 1);
+        while (i < k - 1 && min_k <= k && triplet_max_sum(a, i, k) >= s && triplet_min_sum(a, i, k) <= s) {
             iterations++;
             int j = triplet_find_equal(a, i, k, s - (a[i] + a[k]));
             if (j >= 0) {
                 count++;
                 printf("%d,%d,%d (%d)\n", i, j, k, count);
-                last = minimum(k + 2, n - 1);
+                min_k = j;
+                max_k = minimum(k + 2, n - 1);
                 if (i >= k - 2 ||
                     triplet_min_sum(a, i, k - 1) > s ||
                     triplet_max_sum(a, i, k - 1) < s) {
@@ -722,10 +724,6 @@ static void test_sum_of_three() {
 }
 
 int main(int argc, const char * argv[]) {
-    test_sum_of_three();
-    printf("---\n");
-
-
     move_zeros_to_the_left();
     printf("---\n");
     (void)merge_intervals_O_square;
@@ -755,6 +753,8 @@ int main(int argc, const char * argv[]) {
     test_str_str();
     printf("---\n");
     test_square_root();
+    printf("---\n");
+    test_sum_of_three();
     printf("---\n");
     return 0;
 }
